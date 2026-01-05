@@ -88,11 +88,46 @@ void Ex3() {
 /* Sub-Function definitions */
 
 int multiplication(int num1, int num2) {
-	/*Write Code Here!*/
+	int i;
+    // If either number is 0, the product is 0
+    if (num1 == 0 || num2 == 0) {                        
+        return 0;
+    }
+
+    int negative = 0;                                 
+    // Check if the signs are different to determine if the result should be negative
+    if ((num1 < 0 && num2 > 0) || (num1 > 0 && num2 < 0)) {      
+        negative = 1;
+    }
+
+    // Work with absolute values
+    int a = (num1 < 0) ? -num1 : num1;                
+    int b = (num2 < 0) ? -num2 : num2;      
+    
+    // Optimization: Ensure 'a' is the larger number and 'b' is the smaller number
+    if (b > a) {
+        int temp = a;                 
+        a = b; // 'a' gets the larger value
+        b = temp; // 'b' gets the smaller value
+    }
+    
+    int result = 0;
+    // Add 'a' to the result 'b' times (fewer iterations)
+    for (i = 0; i < b; i++) {      
+        result = result + a;
+    }
+
+    // Apply the negative sign if the original numbers had different signs
+    if (negative) {
+        return -result;                   
+    }
+    
+    return result;
 }
 
 void primeNumbers(int num1, int num2) {
-	for (int i = num1; i <= num2; i++) {
+	int i;
+	for (i = num1; i <= num2; i++) {
 		if (prime(i)) {
 			printf("%d ", i);
 		}
@@ -100,12 +135,13 @@ void primeNumbers(int num1, int num2) {
 }
 
 int prime(int num) {
+	int i;
 
 	if (num < 2) {
 		return 0;
 	}
 
-	for (int i = 2; i * i <= num; i++) {
+	for (i = 2; i * i <= num; i++) {
 		if (num % i == 0) {
 			return 0;
 		}
@@ -117,20 +153,22 @@ int prime(int num) {
 int rotateNumber(int num, int spins) {
 	int num_of_digits = numberLength(num);
 	int first_digit, power_multiplier;
+	int i, k; 
 
 	// If number has 1 digit or is 0, rotation doesn't change it
 	if (num_of_digits <= 1) {
 		return num;
 	}
 
-	// If a number has 4 digits, 5000 spins is the same as 0 spins
+	// Optimization: A rotation of length N is equivalent to 0 rotations.
+    //   We use modulo to remove redundant full cycles. 
 	spins = spins % num_of_digits;
 
-	for (int i=0; i < spins; i++) {
+	for (i=0; i < spins; i++) {
 		power_multiplier = 1;
 
 		// Calculate 10^(length-1) to isolate the leftmost digit
-		for (int k = 1; k < num_of_digits; k++) {
+		for (k = 1; k < num_of_digits; k++) {
 			power_multiplier *= 10;
 		}
 
